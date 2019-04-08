@@ -1,63 +1,145 @@
 /**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
+ The HamFather
+ * This game is about you, a hamster, who tries to escape his domestic life 
+ * to lead the rodent mafia of your dreams.
  * 
- *  To play this game, create an instance of this class and call the "play"
- *  method.
- * 
- *  This main class creates and initialises all the others: it creates all
- *  rooms, creates the parser and starts the game.  It also evaluates and
- *  executes the commands that the parser returns.
- * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.08.10
+ * @author Isabella Dela Pena, Aidan Varkoly
+ * @version 2019.04.04
  */
 
 public class Game 
 {
     private Parser parser;
     private Room currentRoom;
-        
+    private Items foundItems;    
     /**
      * Create the game and initialise its internal map.
      */
     public Game() 
     {
         createRooms();
+        createItems();
         parser = new Parser();
     }
-
+    private void createItems()
+    {
+     Items redpill;
+     redpill = new Items("");
+     
+    }
     /**
      * Create all the rooms and link their exits together.
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room cage, hamWheel, hamHouse, hamBowl, hamDoor;
+        Room brokenVent, vent;
+        Room humanRoom, bed, mirror, dresser;
+        Room ventDuct, bathroom;
+        Room toilet, medCab;
+        Room sewer, sewerPub;
+        Room garden, petStore, ratCage;
       
-        // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        // Inside the Hamster Cage //
+        cage = new Room("in hamster prison.");
+        hamWheel = new Room("at the hamster wheel. Your personal gym");
+        hamHouse = new Room("in your hammy home. Home sweet home");
+        hamBowl = new Room("at your feeding grounds");
+        hamDoor = new Room("looking outside the prison bars. The gate");
         
-        // initialise room exits
-        outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
+        //Escape routes//
+        brokenVent = new Room("at the old shitty vent that smells " 
+        + "like mothballs");
+        vent = new Room ("at one of the vents. This one seems brand new");
+        
+        //In the Human Room//
+        humanRoom = new Room("in the warden's room");
+        bed = new Room("at the warden's bed. It looks comfy, but smells like" +
+        " socks and cheese puffs");
+        mirror = new Room("at the mirror. You look handsome");
+        dresser = new Room("at the dresser. You often see the warden keep " +
+        "clothes and valuables here");
+        
+        //Vent - Bathroom//
+        ventDuct = new Room("in the vent duct. It's dusty as fuck");
+        bathroom = new Room("in the bathroom");
+        toilet = new Room("on the toilet seat. It's gross.");
+        sewer = new Room("in the sewer. I don't know why. You're a hamster, not "
+        + "some dirty ass rat or mutant turtle");
+        sewerPub = new Room("standing in front of a bar called 'The Sewer-Side'");
+        medCab = new Room("at the medicine cabinet. You smell hemorrhoid cream");
+        
+        //Outside//
+        garden = new Room("outside where the warden grows flowers");
+        petStore = new Room("in the pet store where you were kidnapped");
+        ratCage = new Room("standing in front of RBG's lair.");
+        
+        // EXITS 1: CAGE//
+        cage.setExit("north", hamDoor);
+        cage.setExit("south", hamWheel);
+        cage.setExit("east", hamHouse);
+        cage.setExit("west", hamBowl);
+        
+        hamHouse.setExit("west", cage);
 
-        theater.setExit("west", outside);
+        hamBowl.setExit("east", cage);
+        
+        hamDoor.setExit("north", humanRoom);
+        hamDoor.setExit("south", cage);
+        hamDoor.setExit("east", brokenVent);
+        hamDoor.setExit("west", vent);
 
-        pub.setExit("east", outside);
+        hamWheel.setExit("north", cage);
+        
+        //EXITS 2: BEDROOM//
+        humanRoom.setExit("south", hamDoor);
+        humanRoom.setExit("northeast", mirror);
+        humanRoom.setExit("east", dresser);
+        humanRoom.setExit("west", bed);
+        
+        bed.setExit("east", humanRoom);
+        
+        mirror.setExit("south", dresser);
+        mirror.setExit("west", humanRoom);
+        
+        dresser.setExit("north", mirror);
+        dresser.setExit("west", humanRoom);
+        
+        //EXITS 3: VENTS//
+        brokenVent.setExit("west", hamDoor);
+        brokenVent.setExit("south", ventDuct);
+        
+        vent.setExit("east", hamDoor);
+        
+        ventDuct.setExit("east", bathroom);
+        ventDuct.setExit("south", garden);
+        ventDuct.setExit("north", brokenVent);
+        
+        //EXITS 4: BATHROOM//
+        bathroom.setExit("east", toilet);
+        bathroom.setExit("south", medCab);
+        bathroom.setExit("west", ventDuct);
+        
+        toilet.setExit("down", sewer);
+        toilet.setExit("west", bathroom);
+        
+        medCab.setExit("north", bathroom);
+        
+        sewer.setExit("up", toilet);
+        sewer.setExit("west", sewerPub);
+        
+        sewerPub.setExit("east", sewer);
+        
+        //EXITS 5: OUTSIDE//
+        garden.setExit("north", ventDuct);
+        garden.setExit("across", petStore);
+        
+        petStore.setExit("across", garden);
+        petStore.setExit("north", ratCage);
+        
+        ratCage.setExit("south", petStore);
 
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
-
-        office.setExit("west", lab);
-
-        currentRoom = outside;  // start game outside
+        currentRoom = cage;  // start game in the cage
     }
 
     /**
@@ -75,7 +157,8 @@ public class Game
             Command command = parser.getCommand();
             finished = processCommand(command);
         }
-        System.out.println("Thank you for playing.  Good bye.");
+        System.out.println("Thank you for playing!");
+        System.out.println("Goodbye.");
     }
 
     /**
@@ -84,13 +167,15 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
+        System.out.println("The HamFather");
+        System.out.println("-------------");
+        System.out.println("You are a hamster trying to escape your domestic life");
+        System.out.println("to lead the rodent mafia ring of your dreams.");
+        System.out.println("Good luck.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
     }
-
     /**
      * Given a command, process (that is: execute) the command.
      * @param command The command to be processed.
@@ -99,6 +184,7 @@ public class Game
     private boolean processCommand(Command command) 
     {
         boolean wantToQuit = false;
+        boolean wantToPickUp = false;
 
         CommandWord commandWord = command.getCommandWord();
 
@@ -118,6 +204,9 @@ public class Game
             case QUIT:
                 wantToQuit = quit(command);
                 break;
+            case PICKUP:
+                 pickUpItem(command);
+                 break;
         }
         return wantToQuit;
     }
@@ -131,8 +220,7 @@ public class Game
      */
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
+        System.out.println("SAY HELLO TO MY LITTLE FRIENDS");
         System.out.println();
         System.out.println("Your command words are:");
         parser.showCommands();
@@ -179,4 +267,24 @@ public class Game
             return true;  // signal that we want to quit
         }
     }
-}
+    private void pickUpItem(Command command) 
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Pick up what?");
+            return;
+        }
+
+        String use = command.getSecondWord();
+        
+        Items searchItem = foundItems.getItems(use);
+        
+        if (searchItem == null) {
+            System.out.println("There is nothing to pick up!");
+        }
+        else {
+            foundItems = searchItem;
+            System.out.println(foundItems.getLongDescription());
+        }
+    }
+  }
